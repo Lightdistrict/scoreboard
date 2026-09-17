@@ -248,13 +248,12 @@ Frame = Component:extend(function(Class, Prototype)
     --[[ ]]
     function Prototype:p_paint(panel, w, h)
 
-        surface.SetDrawColor(255, 255, 255)
-
         -- Background
-        draw.DrawBlurPanel( panel )
         surface.SetDrawColor(36, 34, 53, 200)
         surface.DrawRect(0, 0, w, h)
-        draw.OutlinedBox( 0, 0, w, h, 1, Color( 0, 0, 0 ) )
+
+        surface.SetDrawColor(0, 0, 0, 255)
+        surface.DrawOutlinedRect(0, 0, w, h, 1)
 
     end
 
