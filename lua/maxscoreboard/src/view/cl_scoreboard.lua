@@ -13,6 +13,7 @@ local ICON_PIN = Material('scoreboard/icons/pin.png', 'noclamp smooth')
 
 local COLOR_WHITE = Color(255, 255, 255)
 local COLOR_LIGHT_GREY = Color(200, 200, 200)
+local COLOR_TITLE_HIGHLIGHT = Color(80, 200, 255) -- sky/cyan blue for the "MAX" part of the header
 
 local FONT_SMALL = font('small')
 local FONT_FOOTER = font('footer')
@@ -295,8 +296,21 @@ Header = Component:extend(function(Class, Prototype)
         surface.SetDrawColor(0, 0, 0, 160)
         surface.DrawRect(0, 0, w, h)
 
-        draw.SimpleText(Addon.config.communityName or "MY COMMUNITY", FONT_TITLE,
-            w * .5, h * .5, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        -- Two-tone title: "highlight" (e.g. "MAX") in its own color,
+        -- followed by "rest" in the normal header color, centered as one unit.
+        local highlight = Addon.config.communityNameHighlight or ""
+        local rest = Addon.config.communityNameRest or "MY COMMUNITY"
+
+        surface.SetFont(FONT_TITLE)
+        local highlightW = surface.GetTextSize(highlight)
+        local restW = surface.GetTextSize(rest)
+        local totalW = highlightW + restW
+
+        local x = w * .5 - totalW * .5
+        local y = h * .5
+
+        draw.SimpleText(highlight, FONT_TITLE, x, y, COLOR_TITLE_HIGHLIGHT, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText(rest, FONT_TITLE, x + highlightW, y, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
     end
 

@@ -49,6 +49,6 @@ font('footer', {
 -- force-downloaded to clients via resource.AddFile in src/sv_misc.lua) -- not a stock GMod font.
 font('title', {
     font = 'Montserrat',
-    size = 32,
+    size = 44,
     antialias = true
 })
