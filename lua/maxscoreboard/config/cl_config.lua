@@ -16,6 +16,7 @@ config.rankIcons = {
     ['moderator']  = 'group_moderator.png',
     ['developer']  = 'group_developer.png',
     ['vip']        = 'group_vip.png',
+    ['supporter']  = 'group_supporter.png',
 }
 
 local iconCache = {}
@@ -29,20 +30,16 @@ end
 local ICON_GROUP_USER = rankIconMaterial('group_user.png')
 
 --[[
-- Returns a usergroup icon for the player, or nil for the default "user"
-- group (skipped so the board doesn't get cluttered with the same icon
-- on everyone).
+- Returns a usergroup icon for the player. Always returns a material --
+- falls back to the default "user" icon for the "user" group and for
+- any group not listed in config.rankIcons.
 -
 - @param player player
 -
-- @return material|nil
+- @return material
 ]]
 config.getUserGroupIconMaterial = function(player)
     local userGroup = string.lower(player:GetUserGroup() or 'user')
-
-    if userGroup == 'user' then
-        return nil
-    end
 
     local iconFile = config.rankIcons[userGroup]
     if iconFile then
