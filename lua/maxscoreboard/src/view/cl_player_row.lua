@@ -72,6 +72,10 @@ end
 - @return material
 ]]
 local function countryMaterial(name)
+    -- system.GetCountry() returns an UPPERCASE code (e.g. "US"), but the
+    -- icon files are lowercase (country/us.png) -- normalize here.
+    name = string.lower(name)
+
     if countryMaterials[name] == nil then
         countryMaterials[name] = Material('scoreboard/icons/country/' .. name .. '.png', 'noclamp alphatest')
     end
