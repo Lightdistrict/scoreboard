@@ -319,7 +319,8 @@ Row = Component:extend(function(Class, Prototype)
             color = Color(255, 255, 200)
         end
 
-        -- Usergroup icon (nil for the default "user" group -- skip it)
+        -- Usergroup icon (always returns a material -- falls back to the
+        -- default "user" icon for the "user" group or an unlisted one)
         local rankIcon = config.getUserGroupIconMaterial(player)
         if rankIcon then
             surface.SetMaterial(rankIcon)
@@ -332,14 +333,20 @@ Row = Component:extend(function(Class, Prototype)
         -- Country -- each client self-reports its own system.GetCountry() over
         -- the network (see src/sv_misc.lua and src/cl_misc.lua); using
         -- system.GetCountry() directly here would only ever show YOUR OWN
-        -- country on every row, not each player's.
-        local countryCode = Addon.playerCountries[player:SteamID64()] or '_unknown'
+        -- country on every row, not each player's. Bots can't self-report at
+        -- all, so config.debugFakeBotData fakes it for them (see cl_config.lua).
+        local isDebugBot = config.debugFakeBotData and player:IsBot()
+
+        local countryCode = isDebugBot and config.getDebugData(player).country
+            or Addon.playerCountries[player:SteamID64()] or '_unknown'
         surface.SetMaterial(countryMaterial(countryCode))
         surface.SetDrawColor(Color(255, 255, 255))
         surface.DrawTexturedRect(54, h * .5 - 11, 22, 22)
 
         -- OS -- also self-reported by the player being drawn, not the viewer
-        surface.SetMaterial(osMaterial(Addon.playerOS and Addon.playerOS[player:SteamID64()] or 'unknown'))
+        local osName = isDebugBot and config.getDebugData(player).os
+            or (Addon.playerOS and Addon.playerOS[player:SteamID64()]) or 'unknown'
+        surface.SetMaterial(osMaterial(osName))
         surface.SetDrawColor(Color(255, 255, 255))
         surface.DrawTexturedRect(84, h * .5 - 8, 16, 16)
 
