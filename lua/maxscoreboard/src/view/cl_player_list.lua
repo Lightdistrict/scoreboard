@@ -1,4 +1,4 @@
-local Addon = StudioNetworkScoreboard
+local Addon = MaxScoreboard
 
 local Component = Addon.Component
 local Components = Addon.Components

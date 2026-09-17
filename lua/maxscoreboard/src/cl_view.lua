@@ -1,4 +1,4 @@
-local Addon = StudioNetworkScoreboard
+local Addon = MaxScoreboard
  
 local identifier = Addon.identifier
 local class = Addon.class
@@ -54,34 +54,6 @@ hook.Add('EntityRemoved', identifier, function(entity)
     end
 end)
 
-hook.Add('HUDPaintBackground', identifier, function()
-
-    if Addon._scoreboard == nil then
-        return
-    end
-
-    if Addon.scoreboard():isVisible() then
-
-        //Addon.drawBluredRect(0, 0, ScrW(), ScrH())
-
-        //surface.SetDrawColor(0, 0, 0, 140)
-        //surface.DrawRect(0, 0, ScrW(), ScrH())
-
-    end
-
-end)
-
-hook.Add('HUDShouldDraw', identifier, function(name)
-
-    if name ~= 'studionet.hud' then
-        return
-    end
-
-    if Addon.scoreboard():isVisible() then
-        return false
-    end
-
-end)
 
 --[[
 - Refresh every now and then..

@@ -1,4 +1,4 @@
-local Addon = StudioNetworkScoreboard
+local Addon = MaxScoreboard
 
 local Component = Addon.Component
 local Components = Addon.Components
@@ -7,19 +7,16 @@ local Components = Addon.Components
 
 local font = Addon.font
 
-local drawBluredRect = Addon.drawBluredRect
-local drawBluredPanel = Addon.drawBluredPanel
-
 ----------------------------------------------------------------
 
-local MATERIAL_LOGO = Material('studionet/scoreboard/logo1.png')
-local ICON_PIN = Material('studionet/scoreboard/icons/pin.png', 'noclamp smooth')
+local ICON_PIN = Material('scoreboard/icons/pin.png', 'noclamp smooth')
 
 local COLOR_WHITE = Color(255, 255, 255)
 local COLOR_LIGHT_GREY = Color(200, 200, 200)
 
 local FONT_SMALL = font('small')
 local FONT_FOOTER = font('footer')
+local FONT_TITLE = font('title')
 
 ----------------------------------------------------------------
 
@@ -251,9 +248,7 @@ Frame = Component:extend(function(Class, Prototype)
     --[[ ]]
     function Prototype:p_paint(panel, w, h)
 
-        -- Blur
-        surface.SetDrawColor(255, 255, 255) -- TODO: Forgot why I do this..?
-        //drawBluredPanel(panel)
+        surface.SetDrawColor(255, 255, 255)
 
         -- Background
         draw.DrawBlurPanel( panel )
@@ -297,9 +292,8 @@ Header = Component:extend(function(Class, Prototype)
         surface.SetDrawColor(0, 0, 0, 160)
         surface.DrawRect(0, 0, w, h)
 
-        surface.SetDrawColor(255, 255, 255)
-        surface.SetMaterial(MATERIAL_LOGO)
-        surface.DrawTexturedRect(w * .5 - 218 * .5, h * .5 - 93 * .65, 218, 122)
+        draw.SimpleText(Addon.config.communityName or "MY COMMUNITY", FONT_TITLE,
+            w * .5, h * .5, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
     end
 
@@ -442,9 +436,6 @@ Footer = Component:extend(function(Class, Prototype)
         surface.DrawRect(0, 0, w, h)
 
         local playerCount = #player.GetAll()
-
-        draw.SimpleText("Studio Networks", FONT_FOOTER,
-             w * .5, h * .5, Color(140, 140, 140, 60), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
         draw.SimpleText("There's currently " .. playerCount .. " players online", FONT_FOOTER,
             10, h * .5, Color(140, 140, 140, 100), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)

@@ -1,4 +1,4 @@
-local Addon = StudioNetworkScoreboard
+local Addon = MaxScoreboard
 
 local identifier = Addon.identifier
 
@@ -42,5 +42,13 @@ font('footer', {
     font = 'Roboto',
     size = 14,
     weight = 300,
+    antialias = true
+})
+
+-- "Montserrat" is the bundled font's internal family name (resource/fonts/montserrat-regular.ttf,
+-- force-downloaded to clients via resource.AddFile in src/sv_misc.lua) -- not a stock GMod font.
+font('title', {
+    font = 'Montserrat',
+    size = 32,
     antialias = true
 })

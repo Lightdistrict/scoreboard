@@ -1,4 +1,4 @@
-local Addon = StudioNetworkScoreboard
+local Addon = MaxScoreboard
 
 local identifier = Addon.identifier
 local config = Addon.config
@@ -36,8 +36,8 @@ local COLOR_PING_EXCELLENT = Color(0, 200, 0, 200)
 --------------------------------------------------
 -- Materials
 
-local ICON_VOICE_ON = Material('studionet/scoreboard/icons/voice_on.png', 'noclamp smooth')
-local ICON_VOICE_OFF = Material('studionet/scoreboard/icons/voice_off.png', 'noclamp smooth')
+local ICON_VOICE_ON = Material('scoreboard/icons/voice_on.png', 'noclamp smooth')
+local ICON_VOICE_OFF = Material('scoreboard/icons/voice_off.png', 'noclamp smooth')
 
 --------------------------------------------------
 -- Fonts
@@ -61,7 +61,7 @@ local osMaterials, countryMaterials = {}, {}
 ]]
 local function osMaterial(name)
     if osMaterials[name] == nil then
-        osMaterials[name] = Material('studionet/scoreboard/icons/os/' .. string.lower(name) .. '.png', 'noclamp smooth')
+        osMaterials[name] = Material('scoreboard/icons/os/' .. string.lower(name) .. '.png', 'noclamp smooth')
     end
     return osMaterials[name]
 end
@@ -73,7 +73,7 @@ end
 ]]
 local function countryMaterial(name)
     if countryMaterials[name] == nil then
-        countryMaterials[name] = Material('studionet/scoreboard/icons/country/' .. name .. '.png', 'noclamp alphatest')
+        countryMaterials[name] = Material('scoreboard/icons/country/' .. name .. '.png', 'noclamp alphatest')
     end
     return countryMaterials[name]
 end
@@ -315,21 +315,27 @@ Row = Component:extend(function(Class, Prototype)
             color = Color(255, 255, 200)
         end
 
-        -- Usergroup icon
-        surface.SetMaterial(config.getUserGroupIconMaterial(player))
-        surface.SetDrawColor(COLOR_SHADOW)
-        surface.DrawTexturedRect(32 + 1, h * .5 - 8 + 1, 16, 16)
-        surface.SetDrawColor(color)
-        surface.DrawTexturedRect(32, h * .5 - 8, 16, 16)
+        -- Usergroup icon (nil for the default "user" group -- skip it)
+        local rankIcon = config.getUserGroupIconMaterial(player)
+        if rankIcon then
+            surface.SetMaterial(rankIcon)
+            surface.SetDrawColor(COLOR_SHADOW)
+            surface.DrawTexturedRect(32 + 1, h * .5 - 8 + 1, 16, 16)
+            surface.SetDrawColor(color)
+            surface.DrawTexturedRect(32, h * .5 - 8, 16, 16)
+        end
 
-        -- Country
-        surface.SetMaterial(countryMaterial(system.GetCountry(), '_unknown'))
+        -- Country -- each client self-reports its own system.GetCountry() over
+        -- the network (see src/sv_misc.lua and src/cl_misc.lua); using
+        -- system.GetCountry() directly here would only ever show YOUR OWN
+        -- country on every row, not each player's.
+        local countryCode = Addon.playerCountries[player:SteamID64()] or '_unknown'
+        surface.SetMaterial(countryMaterial(countryCode))
         surface.SetDrawColor(Color(255, 255, 255))
         surface.DrawTexturedRect(54, h * .5 - 11, 22, 22)
 
-        -- OSs
-        local os = system.IsWindows() and 'windows'or system.IsLinux() and 'linux'or system.IsOSX() and 'osx' or 'unknown'
-        surface.SetMaterial(osMaterial(os, 'linux'))
+        -- OS -- also self-reported by the player being drawn, not the viewer
+        surface.SetMaterial(osMaterial(Addon.playerOS and Addon.playerOS[player:SteamID64()] or 'unknown'))
         surface.SetDrawColor(Color(255, 255, 255))
         surface.DrawTexturedRect(84, h * .5 - 8, 16, 16)
 
