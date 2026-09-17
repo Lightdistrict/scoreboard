@@ -249,12 +249,8 @@ Frame = Component:extend(function(Class, Prototype)
     --[[ ]]
     function Prototype:p_paint(panel, w, h)
 
-        -- Background: neutral dark base (was a purple tint) with a
-        -- barely-there white wash on top for a subtle frosted look.
-        surface.SetDrawColor(20, 20, 22, 200)
-        surface.DrawRect(0, 0, w, h)
-
-        surface.SetDrawColor(255, 255, 255, 10)
+        -- Background: plain black.
+        surface.SetDrawColor(0, 0, 0, 210)
         surface.DrawRect(0, 0, w, h)
 
         surface.SetDrawColor(0, 0, 0, 255)
