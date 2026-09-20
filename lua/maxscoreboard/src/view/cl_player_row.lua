@@ -353,15 +353,16 @@ Row = Component:extend(function(Class, Prototype)
         draw.SimpleText(player:getDarkRPVar('job') or "--", FONT_SMALL, w * .5  + 1, h * .5 + 1, COLOR_SHADOW, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         draw.SimpleText(player:getDarkRPVar('job') or "--", FONT_SMALL, w * .5, h * .5, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
-        -- Level/Prestige -- levelsystem addon, if installed, mirrors these
-        -- into stock NWInts for every client to read (see its
-        -- sv_data.lua:SyncToClient). -1 is the "never synced" sentinel
-        -- (unset NWInt, or levelsystem isn't installed at all), since a
-        -- real level is always >= 1.
-        local playerLevel = player:GetNWInt('LevelSystemLevel', -1)
-        if playerLevel >= 0 then
-            local playerPrestige = player:GetNWInt('LevelSystemPrestige', 0)
-            local levelText = (playerPrestige > 0 and ('P' .. playerPrestige .. ' ') or '') .. 'Lvl ' .. playerLevel
+        -- Level/Prestige -- levelsystem addon, if installed, broadcasts
+        -- this to every client (LevelSystem.PublicData, keyed by player
+        -- entity -- see its cl_public_data.lua/sv_data.lua). Not using
+        -- NWInt here: those only reliably reach clients for whom the
+        -- entity is currently PVS-relevant, which silently breaks a
+        -- scoreboard that's supposed to show everyone regardless of
+        -- visibility.
+        local levelData = LevelSystem and LevelSystem.PublicData and LevelSystem.PublicData[player]
+        if levelData then
+            local levelText = (levelData.prestige > 0 and ('P' .. levelData.prestige .. ' ') or '') .. 'Lvl ' .. levelData.level
 
             draw.SimpleText(levelText, FONT_SMALL, w * .625 + 1, h * .5 + 1, COLOR_SHADOW, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             draw.SimpleText(levelText, FONT_SMALL, w * .625, h * .5, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
