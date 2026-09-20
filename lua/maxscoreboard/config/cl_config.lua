@@ -14,9 +14,9 @@ config.rankIcons = {
     ['superadmin'] = 'group_superadmin.png',
     ['admin']      = 'group_admin.png',
     ['moderator']  = 'group_moderator.png',
-    ['developer']  = 'group_developer.png',
-    ['vip']        = 'group_vip.png',
+    ['owner']  = 'group_owner.png',
     ['supporter']  = 'group_supporter.png',
+    ['user']  = 'group_user.png',
 }
 
 local iconCache = {}
